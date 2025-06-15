@@ -20,6 +20,7 @@ let
     "jovian-stubs"
     "steam"
     "steamos-polkit-helpers"
+    "globalDeckArgs"
   ];
 
   # A very simplistic "session switcher." All it does is kill gamescope.
