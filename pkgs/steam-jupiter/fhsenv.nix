@@ -1,11 +1,13 @@
 # A wrapped version of Steam with shims to satisfy the SteamOS-only
 # dependencies of the Steam Deck UI
 
-{ writeShellScriptBin
+{ lib
+, writeShellScriptBin
 , dmidecode
 , jovian-stubs
 , steam
   # , steamos-polkit-helpers
+, globalDeckArgs ? true
 , ...
 } @ args:
 
@@ -65,7 +67,8 @@ let
     # so we have the correct client version. This is important even for desktop
     # use because only the Steam Deck branch of the client has the new on-screen
     # keyboard that's summoned with STEAM + X.
-    extraArgs = (args.extraArgs or "") + " -steamdeck";
+    extraArgs = (args.extraArgs or "")
+      + (lib.strings.optionalString globalDeckArgs " -steamdeck");
   });
 in
 wrappedSteam
