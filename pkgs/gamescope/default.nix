@@ -16,4 +16,8 @@ gamescope'.overrideAttrs(old: rec {
     fetchSubmodules = true;
     hash = "sha256-i1a3nTospbGR/uPbwuM0z6cATANvw3QCFXd99e3tXCs=";
   };
+
+  postPatch = ''
+    patchShebangs default_extras_install.sh
+  '';
 })
