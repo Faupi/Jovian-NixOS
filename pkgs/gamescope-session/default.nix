@@ -113,13 +113,13 @@ let
   };
 in stdenv.mkDerivation(finalAttrs: {
   pname = "gamescope-session";
-  version = "3.16.14-1";
+  version = "3.16.15-2";
 
   src = fetchFromGitHub {
     owner = "Jovian-Experiments";
     repo = "PKGBUILDs-mirror";
     rev = "jupiter-main/gamescope-${finalAttrs.version}";
-    hash = "sha256-4DWxwe87GLS50jHFrOAeEBl+7CiSTdLlxM343JFV2+s=";
+    hash = "sha256-RQmM10Mtos/ECQWULT0YZfiRDC6MzFw5xSxm3sFFNGA=";
   };
 
   patches = [
