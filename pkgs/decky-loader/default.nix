@@ -27,7 +27,10 @@ python3.pkgs.buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace backend/decky_loader/localplatform/localplatformlinux.py \
-      --replace-fail '"systemctl"' '"${lib.getExe' systemdMinimal "systemctl"}"' \
+      --replace-fail '"systemctl"' '"${lib.getExe' systemdMinimal "systemctl"}"'
+
+    substituteInPlace backend/decky_loader/helpers.py \
+      --replace-fail '"python3"' '"${lib.getExe python3}"'
   '';
 
   pyproject = true;
