@@ -5,6 +5,7 @@
 , python3
 , coreutils
 , psmisc
+, systemdMinimal
 }:
 python3.pkgs.buildPythonPackage rec {
   pname = "decky-loader";
@@ -24,6 +25,11 @@ python3.pkgs.buildPythonPackage rec {
     hash = "sha256-HS3PWLxIoH/1/ir510eOLEMVMEdXBOhvYHTZBMnCB2Q=";
   };
 
+  postPatch = ''
+    substituteInPlace backend/decky_loader/localplatform/localplatformlinux.py \
+      --replace-fail '"systemctl"' '"${lib.getExe' systemdMinimal "systemctl"}"' \
+  '';
+
   pyproject = true;
 
   pnpmRoot = "frontend";
@@ -39,7 +45,7 @@ python3.pkgs.buildPythonPackage rec {
     cd ../backend
   '';
 
-  build-system = with python3.pkgs; [ 
+  build-system = with python3.pkgs; [
     poetry-core
     poetry-dynamic-versioning
   ];
