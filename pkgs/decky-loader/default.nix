@@ -6,6 +6,9 @@
 , coreutils
 , psmisc
 , systemdMinimal
+, killall
+, lsof
+, gdb
 }:
 python3.pkgs.buildPythonPackage rec {
   pname = "decky-loader";
@@ -27,7 +30,10 @@ python3.pkgs.buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace backend/decky_loader/localplatform/localplatformlinux.py \
-      --replace-fail '"systemctl"' '"${lib.getExe' systemdMinimal "systemctl"}"'
+      --replace-fail '"systemctl"' '"${lib.getExe' systemdMinimal "systemctl"}"' \
+      --replace-fail '"killall"' '"${lib.getExe killall}"' \
+      --replace-fail '"lsof"' '"${lib.getExe lsof}"' \
+      --replace-fail '"gdb"' '"${lib.getExe gdb}"'
 
     substituteInPlace backend/decky_loader/helpers.py \
       --replace-fail '"python3"' '"${lib.getExe python3}"'
