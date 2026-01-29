@@ -3,9 +3,9 @@
 let
   inherit (lib) versions;
 
-  kernelVersion = "6.15.11";
-  vendorVersion = "valve1";
-  hash = "sha256-hi+kMtQTxpRFuE3gxth4QlJb3AOqHVWbJaaA2MDYq1s=";
+  kernelVersion = "6.16.12";
+  vendorVersion = "valve9-jovian1";
+  hash = "sha256-kWOhRZx8vcN6ekpMj6VdJUYmLfxIy7ftiroh2Jq4Rz0=";
 in
 buildLinux (args // rec {
   version = "${kernelVersion}-${vendorVersion}";
@@ -110,6 +110,7 @@ buildLinux (args // rec {
     # Jovian: renamed
     HID_ASUS_ALLY = module;
     ASUS_ARMOURY = module;
+    ASUS_WMI_DEPRECATED_ATTRS = yes;
 
     # PARAVIRT options have overhead, even on bare metal boots. They can cause
     # spinlocks to not be inlined as well. Either way, we don't intend to run this
@@ -137,6 +138,8 @@ buildLinux (args // rec {
 
     # Disable simple-framebuffer to fix logo regression
     SYSFB_SIMPLEFB = lib.mkForce no;
+    DRM_EFIDRM = no;
+    DRM_VESADRM = no;
 
     # Enable Extensible Scheduling Class
     SCHED_CLASS_EXT = yes;
@@ -150,11 +153,15 @@ buildLinux (args // rec {
     JOYSTICK_XBOX_GIP_FF = yes;
     JOYSTICK_XBOX_GIP_LEDS = yes;
 
+    # Enable Valve LEDs driver
+    LEDS_VALVE = module;
+
     # Jovian: fix fallout from the vendor-set options
     DRM_AMD_DC_SI = lib.mkForce (option no);
     DRM_HYPERV = lib.mkForce (option no);
     FB_HYPERV = lib.mkForce (option no);
     INTEL_TDX_GUEST = lib.mkForce (option no);
+    HYPERV = lib.mkForce (option no);
     KVM_GUEST = lib.mkForce (option no);
     MOUSE_PS2_VMMOUSE = lib.mkForce (option no);
     PARAVIRT_TIME_ACCOUNTING = lib.mkForce (option no);

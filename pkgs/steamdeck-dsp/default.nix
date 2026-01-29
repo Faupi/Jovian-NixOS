@@ -4,12 +4,13 @@
 , boost
 , lv2
 , faust2lv2
-, rnnoise-plugin
+, noisetorch-ladspa
 , which
 , resholve
 , bash
 , coreutils
 , dmidecode
+, gnused
 }:
 
 let
@@ -29,15 +30,24 @@ let
       dmidecode
     ];
   };
+  cec-hwconfig-solution = {
+    scripts = [ "share/cec-sysconf/cec-hwconfig" ];
+    interpreter = "${bash}/bin/bash";
+    inputs = [
+      coreutils
+      dmidecode
+      gnused
+    ];
+  };
   self = stdenv.mkDerivation(finalAttrs: {
     pname = "steamdeck-dsp";
-    version = "0.69";
+    version = "0.84";
 
     src = fetchFromGitHub {
       owner = "Jovian-Experiments";
       repo = "steamdeck-dsp";
       rev = finalAttrs.version;
-      hash = "sha256-j/RIPox4ug11p2uKVkO59l2rT+i7C9xpDyut9p73mq4=";
+      hash = "sha256-qcx3EM5DRIvZreiae20vc3+vKso9cqoS5iPrjDof4eY=";
     };
 
     nativeBuildInputs = [
@@ -50,8 +60,8 @@ let
         --replace-fail /usr/include/boost "${boost.dev}/include/boost" \
         --replace-fail /usr/include/lv2 "${lv2.dev}/include/lv2"
 
-      substituteInPlace pipewire-confs/hardware-profiles/*/pipewire.conf.d/filter-chain.conf \
-        --replace-fail "/usr/lib/ladspa/librnnoise_ladspa.so" "${rnnoise-plugin}/lib/ladspa/librnnoise_ladspa.so"
+      substituteInPlace pipewire-confs/hardware-profiles/*/filter-chain.conf.d/filter-chain.conf \
+        --replace-fail "/usr/lib/ladspa/rnnoise_ladspa.so" "${noisetorch-ladspa}/lib/ladspa/rnnoise_ladspa.so"
 
       substituteInPlace ucm2/conf.d/*/*.conf \
         --replace-warn "exec" "# exec"
@@ -62,6 +72,7 @@ let
         pipewire-confs/systemd/system/pipewire-sysconf.service \
         wireplumber/hardware-profiles/wireplumber-hwconfig \
         wireplumber/systemd/system/wireplumber-sysconf.service \
+        cec-sysconf/systemd/system/cec-sysconf.service \
         --replace-fail "/usr/share" "$out/share"
     '';
 
@@ -75,6 +86,11 @@ let
 
       ${resholve.phraseSolution "pipewire-hwconfig" pipewire-hwconfig-solution}
       ${resholve.phraseSolution "wireplumber-hwconfig" wireplumber-hwconfig-solution}
+      ${resholve.phraseSolution "cec-hwconfig" cec-hwconfig-solution}
+
+      # work around dead symlink
+      touch $out/share/pipewire/hardware-profiles/valve-jupiter/filter-chain.conf.d/filter-chain-sink.conf
+      rm -r $out/lib/systemd/system/multi-user.target.wants/
 
       for pkg in pipewire wireplumber; do
         for i in $(find $out/share/$pkg/hardware-profiles/* -type f -printf "%P\n" | sort | uniq); do 

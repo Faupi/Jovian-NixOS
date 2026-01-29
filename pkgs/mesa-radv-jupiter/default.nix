@@ -1,7 +1,7 @@
 { stdenv, mesa, fetchFromGitHub }:
 let
-  version = "25.2.0";
-  jupiterVersion = "steamos-25.6.0";
+  version = "26.0.0";
+  jupiterVersion = "steamos-25.11.4";
 in stdenv.mkDerivation {
   pname = "mesa";
   version = "${version}.${jupiterVersion}";
@@ -10,7 +10,7 @@ in stdenv.mkDerivation {
     owner = "Jovian-Experiments";
     repo = "mesa";
     rev = jupiterVersion;
-    hash = "sha256-7plgicMRqR6hatOxMkhC/vVgmqw3M7J6OyU37HA68IM=";
+    hash = "sha256-BeRZ9cbEnQHHEbOUJXIbsC6FIw34nF4pWBAPTMTsAUU=";
   };
 
   inherit (mesa) buildInputs nativeBuildInputs propagatedBuildInputs;
@@ -23,30 +23,35 @@ in stdenv.mkDerivation {
   mesonFlags = [
     "-D android-libbacktrace=disabled"
     "-D b_ndebug=true"
-    "-D gallium-drivers="
-    "-D gallium-extra-hud=false"
-    "-D gallium-rusticl=false"
+    "-D gallium-mediafoundation=disabled"
     "-D gles1=disabled"
-    "-D html-docs=disabled"
+    # "-D intel-rt=enabled"
     "-D libunwind=disabled"
     "-D microsoft-clc=disabled"
     "-D valgrind=enabled"
     "-D video-codecs=all"
-    "-D vulkan-drivers=amd"
-    "-D vulkan-layers="
     # Jupiter specific options below:
+    "-D gallium-drivers="
+    "-D gallium-extra-hud=false"
+    "-D gallium-rusticl=false"
+    "-D html-docs=disabled"
+    "-D vulkan-drivers=amd"
+    "-D vulkan-layers=anti-lag"
     "-D b_lto=false"
-    "-D gallium-vdpau=disabled"
     "-D gallium-va=disabled"
-    "-D gallium-mediafoundation=disabled"
     "-D egl=disabled"
     "-D glx=disabled"
     "-D gbm=disabled"
     "-D gles2=disabled"
     "-D glvnd=disabled"
-    "-D llvm=enabled"
+    "-D llvm=disabled"
     "-D lmsensors=disabled"
     "-D gpuvis=true"
-    "-D radv-build-id=b0f01041524e5ffa6a44281db9150fe88eae8192"
+    "-D display-info=disabled"
+    "-D amdgpu-virtio=true"
+    "-D intel-rt=disabled"
+    "-D sysprof=false"
+    "-D tools=drm-shim"
+    "-D radv-build-id=2e7d89d5cde65dd51b101e65c02d54afd97c1f65"
   ];
 }

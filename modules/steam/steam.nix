@@ -35,6 +35,8 @@ in
       # Enable the usual desktop Steam stuff
       programs.steam.enable = mkDefault true;
 
+      boot.kernelModules = [ "ntsync" ];
+
       # Enable MTU probing, as vendor does
       # See: https://github.com/ValveSoftware/SteamOS/issues/1006
       # See also: https://www.reddit.com/r/SteamDeck/comments/ymqvbz/ubisoft_connect_connection_lost_stuck/j36kk4w/?context=3
@@ -55,6 +57,15 @@ in
 
       # Required by steamos-manager
       services.inputplumber.enable = true;
+      services.scx = {
+        enable = lib.mkDefault true;
+        scheduler = "scx_lavd";
+      };
+      systemd.services.scx.wantedBy = lib.mkForce [];
+      services.orca.enable = lib.mkDefault true;
+
+      # https://github.com/Jovian-Experiments/steamos-manager/blob/5fecc6bbb47719a65d0b10aacbd0ffe873fb1e43/data/user/orca.service#L9
+      systemd.user.services.orca.serviceConfig.EnvironmentFile = "%t/gamescope-environment";
 
       # Vendor patch: https://raw.githubusercontent.com/Jovian-Experiments/PKGBUILDs-mirror/cdaeca26642d59fc9109e98ac9ce2efe5261df1b/0001-Add-systemd-service.patch
       systemd.user.services.wakehook = {
@@ -94,9 +105,9 @@ in
       services.displayManager.sessionPackages = [ pkgs.gamescope-session ];
 
       # Conflicts with powerbuttond
-      services.logind.extraConfig = ''
-        HandlePowerKey=ignore
-      '';
+      services.logind.settings.Login = {
+        HandlePowerKey = "ignore";
+      };
 
       services.udev.packages = [
         pkgs.powerbuttond

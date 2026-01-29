@@ -2,6 +2,8 @@
 , fetchFromGitHub
 , nodejs
 , pnpm_9
+, fetchPnpmDeps
+, pnpmConfigHook
 , python3
 , coreutils
 , psmisc
@@ -12,20 +14,21 @@
 }:
 python3.pkgs.buildPythonPackage rec {
   pname = "decky-loader";
-  version = "3.1.10";
+  version = "3.2.1";
 
   src = fetchFromGitHub {
     owner = "SteamDeckHomebrew";
     repo = "decky-loader";
     rev = "v${version}";
-    hash = "sha256-XHKkitgVaBZRQXFOK+K+4fKnsB2SOKTm/QGkDLcMIjg=";
+    hash = "sha256-E4OdUAu7H6k9vKxUmD0eQdLNG4c1HBw7fVjgqfgpNNE=";
   };
 
-  pnpmDeps = pnpm_9.fetchDeps {
-    fetcherVersion = 1;
+  pnpmDeps = fetchPnpmDeps {
     inherit pname version src;
     sourceRoot = "${src.name}/frontend";
-    hash = "sha256-HS3PWLxIoH/1/ir510eOLEMVMEdXBOhvYHTZBMnCB2Q=";
+    pnpm = pnpm_9;
+    fetcherVersion = 3;
+    hash = "sha256-Kw1I+r1zsJJ+0bi0RyfG7LYyXnRW/+nKod6KKr/xrnk=";
   };
 
   postPatch = ''
@@ -45,7 +48,8 @@ python3.pkgs.buildPythonPackage rec {
 
   nativeBuildInputs = [
     nodejs
-    pnpm_9.configHook
+    pnpm_9
+    pnpmConfigHook
   ];
 
   preBuild = ''

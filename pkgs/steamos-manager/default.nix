@@ -4,13 +4,15 @@
   replaceVars,
   jupiter-hw-support,
   jovian-stubs,
-  steamos-polkit-helpers,
   steamdeck-firmware,
   jupiter-dock-updater-bin,
+  coreutils,
   iwd,
   trace-cmd,
   iw,
-  orca,
+  pipewire,
+  wireplumber-jupiter,
+  dmidecode,
   pkg-config,
   wrapGAppsNoGuiHook,
   glib,
@@ -20,17 +22,17 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "steamos-manager";
-  version = "25.7.0";
+  version = "25.12.0";
 
   src = fetchFromGitLab {
     domain = "gitlab.steamos.cloud";
     owner = "holo";
     repo = "steamos-manager";
     rev = "v${version}";
-    hash = "sha256-wM6+12HJleYOkBaWcTjj08Qs62Pof3CSm0Dl7tCf/1M=";
+    hash = "sha256-6BNuIyqCZfAaHokfltoS65SwIY4boVUUltZCe9J++iY=";
   };
 
-  cargoHash = "sha256-J8RMiPWGDo7oOKWA3ql/D9d3jP4CVi/AJch9eio/prI=";
+  cargoHash = "sha256-Nazojb3mP2rP5ybvwVsElaAATfZfeX3nUx+LVwQEuoc=";
 
   # tests assume Steam Deck hardware and FHS paths
   doCheck = false;
@@ -42,11 +44,13 @@ rustPlatform.buildRustPackage rec {
       steamDeckFirmware = steamdeck-firmware;
       jupiterDockUpdaterBin = jupiter-dock-updater-bin;
       hwsupport = jupiter-hw-support;
-      polkitHelpers = steamos-polkit-helpers;
+      coreutils = coreutils;
       iwd = iwd;
       traceCmd = trace-cmd;
       iw = iw;
-      orca = orca;
+      pipewire = pipewire;
+      wireplumber = wireplumber-jupiter;
+      dmidecode = dmidecode;
       out = null;
     })
     # FIXME: build steamos-log-submitter and reenable this maybe?
@@ -101,7 +105,6 @@ rustPlatform.buildRustPackage rec {
 
     install -m644 "data/user/com.steampowered.SteamOSManager1.service" "$out/share/dbus-1/services/"
     install -m644 "data/user/steamos-manager.service" "$out/lib/systemd/user/"
-    install -m644 "data/user/orca.service" "$out/lib/systemd/user/"
   '';
 
   postFixup = ''
