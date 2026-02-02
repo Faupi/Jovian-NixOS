@@ -62,12 +62,9 @@ let
       export PATH=${jovian-stubs}/bin:$PATH
     '' + (args.extraProfile or "");
 
-    # Force using host /tmp so gamescope-session can find the magic files
-    extraBwrapArgs = [
-      "--bind /tmp /tmp"
-    ] ++ (args.extraBwrapArgs or [ ]);
-
     extraArgs = platformArgs + " " + (args.extraArgs or "");
+
+    privateTmp = false; # Keep /tmp for gamescope<->steam cooperation
   });
 in
 wrappedSteam
