@@ -30,7 +30,7 @@
 
 # we use our own upstream version
 # FIXME: maybe port Dualsense config from Valve
-alsa-ucm-conf.check = "1.2.14-2.2"
+alsa-ucm-conf.check = "1.2.14-2.3"
 
 # Valve A/B stuff
 atomupd-daemon.ignore = true
@@ -160,6 +160,9 @@ ibus-table-cangjie-lite.ignore = true
 
 inputplumber.map = true
 
+# some non-critical patches
+iwd.check = "3.9-1.1"
+
 jupiter-dock-updater-bin = { map = true, pkgrel = 1 }
 
 jupiter-fan-control = { map = true, pkgrel = 4 }
@@ -248,7 +251,7 @@ maliit-keyboard.check = "2.3.1-4.2"
 
 mangohud.check = "0.8.3.rc1.r13.g756ffcfd-1"
 
-mesa = { map = "mesa-radeonsi-jupiter", pkgrel = "2", fixup = "mesa" }
+mesa = { map = "mesa-radeonsi-jupiter", pkgrel = "3", fixup = "mesa" }
 mesa-radv = { map = "mesa-radv-jupiter", pkgrel = "1", fixup = "mesa" }
 
 # we don't actually apply any of this, but it's worth checking
@@ -317,7 +320,7 @@ steam-jupiter-oobe.ignore = true
 
 steam_notif_daemon = { map = true, pkgrel = 3, fixup = "v" }
 
-steamdeck-dsp = { map = true, pkgrel = 2 }
+steamdeck-dsp = { map = true, pkgrel = 1 }
 
 # we don't ship those but they may be useful to reference
 steamdeck-kde-presets.check = "3.8.3-1"
@@ -331,7 +334,7 @@ steamos-atomupd-client.ignore = true
 # applied as NixOS modules instead
 # check both to make sure we get the latest changes
 steamos-customizations-git.check = "20251010.1-2"
-steamos-customizations-jupiter.check = "20260123.1-1"
+steamos-customizations-jupiter.check = "20260130.1-1"
 
 # devkit stuff
 steamos-devkit-service.ignore = true
