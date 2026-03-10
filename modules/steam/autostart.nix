@@ -76,14 +76,23 @@ in
 
       services.displayManager = {
         autoLogin = {
-          enable = true;
+          enable = false; # Prevent writing any autologin session info into main config
           user = cfg.user;
         };
         sddm = {
           enable = true;
           autoLogin.relogin = true;
+          settings = {
+            # Direct override so default autologin session doesn't get written 
+            # -> steamos-manager configuration applies
+            Autologin = lib.mkForce {
+              User = config.services.displayManager.autoLogin.user;
+              Relogin = config.services.displayManager.sddm.autoLogin.relogin;
+              # Session needs to be missing here! (/etc/sddm.conf)
+            };
+          };
         };
-        defaultSession = "gamescope-wayland";
+        defaultSession = "gamescope-wayland"; # Probably redundant
       };
 
       # replicate vendor failsafe in case the system is rebooted with a broken config
