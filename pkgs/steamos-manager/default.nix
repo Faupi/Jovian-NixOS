@@ -1,24 +1,24 @@
-{
-  rustPlatform,
-  fetchFromGitLab,
-  replaceVars,
-  jupiter-hw-support,
-  jovian-stubs,
-  steamdeck-firmware,
-  jupiter-dock-updater-bin,
-  coreutils,
-  iwd,
-  trace-cmd,
-  iw,
-  pipewire,
-  wireplumber-jupiter,
-  dmidecode,
-  pkg-config,
-  wrapGAppsNoGuiHook,
-  glib,
-  gsettings-desktop-schemas,
-  speechd-minimal,
-  udev,
+{ rustPlatform
+, fetchFromGitLab
+, replaceVars
+, jupiter-hw-support
+, jovian-stubs
+, steamdeck-firmware
+, jupiter-dock-updater-bin
+, coreutils
+, iwd
+, trace-cmd
+, iw
+, pipewire
+, wireplumber-jupiter
+, dmidecode
+, pkg-config
+, wrapGAppsNoGuiHook
+, glib
+, gsettings-desktop-schemas
+, speechd-minimal
+, udev
+,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "steamos-manager";
@@ -37,9 +37,8 @@ rustPlatform.buildRustPackage rec {
   # tests assume Steam Deck hardware and FHS paths
   doCheck = false;
 
-  patches = [ 
-    (replaceVars ./hardcode-paths.patch
-    {
+  patches = [
+    (replaceVars ./hardcode-paths.patch {
       stubs = jovian-stubs;
       steamDeckFirmware = steamdeck-firmware;
       jupiterDockUpdaterBin = jupiter-dock-updater-bin;
@@ -88,20 +87,27 @@ rustPlatform.buildRustPackage rec {
     mv $out/bin/steamos-manager $out/lib/steamos-manager
 
     # copied from vendor makefile, s@$(DESTDIR)/usr@$out@g
+    install -d -m0755 "$out/share/dbus-1/interfaces/"
     install -d -m0755 "$out/share/dbus-1/services/"
     install -d -m0755 "$out/share/dbus-1/system-services/"
     install -d -m0755 "$out/share/dbus-1/system.d/"
+    install -d -m0755 "$out/share/steamos-manager/remotes.d/"
     install -d -m0755 "$out/lib/systemd/system/"
+    install -d -m0755 "$out/lib/systemd/system/sddm.service.d/"
     install -d -m0755 "$out/lib/systemd/user/"
+    install -d -m0755 "$out/etc/steamos-manager/remotes.d/"
 
     install -D -m644 -t "$out/share/steamos-manager/devices" "data/devices/"*
     install -D -m644 LICENSE "$out/share/licenses/steamos-manager/LICENSE"
 
     install -m644 "data/platform.toml" "$out/share/steamos-manager/"
 
+    install -D -m644 -t "$out/share/dbus-1/interfaces" "data/interfaces/"*
+
     install -m644 "data/system/com.steampowered.SteamOSManager1.service" "$out/share/dbus-1/system-services/"
     install -m644 "data/system/com.steampowered.SteamOSManager1.conf" "$out/share/dbus-1/system.d/"
     install -m644 "data/system/steamos-manager.service" "$out/lib/systemd/system/"
+    install -m644 "data/system/reset-oneshot-boot.conf" "$out/lib/systemd/system/sddm.service.d/"
 
     install -m644 "data/user/com.steampowered.SteamOSManager1.service" "$out/share/dbus-1/services/"
     install -m644 "data/user/steamos-manager.service" "$out/lib/systemd/user/"
